@@ -1,0 +1,275 @@
+.barlow-bold-italic {
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+  color: rgb(0, 0, 0);
+}
+.nav-link.active {
+    color: #FFFFFF !important;
+    background-color: #E0961F;
+}
+.navbar{
+    background-color: #E6AB4C !important;
+}
+.parent{
+    display:flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.children{
+    background-color: #E6AB4C !important;
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+}
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+header img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+header picture {
+    display: block;
+    width: 100%;
+}
+
+header picture img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+header {
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    header img {
+        max-height: 400px;
+        object-fit: cover;
+    }
+}
+
+main {
+    display: block;
+    padding: 2rem;
+}
+
+.card {
+    flex-shrink: 0;
+    margin-top: 1.5rem;
+    max-width: 100%;
+}
+
+.card img {
+    max-width: 100%;
+    height: auto;
+}
+
+.content-wrapper {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: nowrap;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+}
+
+.text-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.text-section .btn {
+    margin-top: 1.5rem;
+    display: inline-block;
+}
+
+.image-section {
+    flex: 0 1 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.image-section img {
+    max-width: 100%;
+    height: auto;
+}
+
+.image-section picture {
+    max-width: 100%;
+}
+
+.card-section {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: auto;
+}
+
+.card-section .card {
+    max-width: 100%;
+    width: 300px;
+    margin-top: 0;
+}
+
+.iframe-section {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.iframe-section iframe {
+    width: 450px;
+    height: 450px;
+    border: 1px solid black;
+}
+
+.aboutme {
+    display: block;
+}
+
+.table-responsive {
+    display: block;
+}
+
+/* Button styling to match navbar */
+.btn-primary {
+    background-color: #E6AB4C !important;
+    border-color: #E6AB4C !important;
+}
+
+.btn-primary:hover {
+    background-color: #d99a3a !important;
+    border-color: #d99a3a !important;
+}
+
+/* Responsive layout voor kleinere schermen */
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .card-section {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .card-section .card {
+        width: 100%;
+    }
+    
+    .iframe-section {
+        justify-content: center;
+    }
+    
+    .iframe-section iframe {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+}
+
+.diploma-section {
+    width: 100%;
+}
+
+.diploma-content {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.diploma-item {
+    flex: 1;
+    min-width: 300px;
+}
+
+.diploma-item .table-responsive {
+    overflow-x: auto;
+}
+
+.diploma-item table {
+    font-size: 0.95rem;
+}
+
+.brb-content {
+    max-width: 100%;
+}
+
+.brb-wrapper {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.brb-text {
+    flex: 1;
+    min-width: 300px;
+}
+
+.brb-card-section {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+}
+
+.brb-content .card {
+    max-width: 100%;
+    width: 220px;
+    margin-top: 2rem;
+}
+
+.brb-content .card img,
+.brb-card-section .card-img-top {
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: cover !important;
+}
+
+/* Accordion button styling */
+#accordion .card-header {
+    background-color: #E6AB4C !important;
+}
+
+#accordion .btn {
+    background-color: #E6AB4C !important;
+    color: #000000 !important;
+    border: none !important;
+}
+
+#accordion .btn:hover {
+    background-color: #d99a3a !important;
+    color: #000000 !important;
+}
+
+#accordion .btn:not(.collapsed) {
+    background-color: #E0961F !important;
+    color: #FFFFFF !important;
+}
+
+@media (max-width: 768px) {
+    .brb-wrapper {
+        flex-direction: column;
+    }
+    
+    .brb-card-section {
+        width: 100%;
+    }
+    
+    .brb-content .card {
+        width: 100%;
+    }
+}
