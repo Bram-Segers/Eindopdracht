@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="nl">
 <head>
-    <title>Home</title>
+    <title>Bewerken Student</title>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta
@@ -53,64 +53,29 @@
 
 </header>
 <main>
-    <form action="index.php" method="get">
-    <div class="input-group flex-nowrap">
-        <span class="input-group-text"</span>
-        <input type="text" class="form-control" placeholder="" aria-label="naamStudent" name="naamStudent">
-        <!-- input type="submit" value="Zoeken" -->
-        <input type="submit" name="studentZoeken" value="Zoeken">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Bewerk student
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Bewerk formulier</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                    <button type="button" class="btn btn-primary">Sla bewerkingen op</button>
+                </div>
+            </div>
+        </div>
     </div>
-    </form>
-
-    <?php
-
-    include "../includes/db_functions.php";
-
-    StartConnection("studenten_db");
-
-
-    if(isset($_GET["studentZoeken"])) {
-        $searchName = $_GET["naamStudent"];
-
-        $query = "SELECT * FROM studenten WHERE Voornaam LIKE '%$searchName%' OR Achternaam LIKE '%$searchName%' OR StudentID = '$searchName';";
-
-
-        $resultSearchStudent = ExecuteSelectQuery($query);
-            //echo var_dump();
-        echo "<table class='table-responsive'>";
-        echo "<thead>";
-        echo "<tr>";
-        echo "<th scope='col'>Student ID</th>";
-        echo "<th scope='col'>Voornaam</th>";
-        echo "<th scope='col'>Achternaam</th>";
-        echo "<th scope='col'>Studierichting</th>";
-        echo "</tr>";
-        echo "</thead>";
-        foreach ($resultSearchStudent as $row) {
-            $voornaam = $row["Voornaam"];
-            $achternaam = $row["Achternaam"];
-            $studentID = $row["StudentID"];
-            $studierichting = $row["Studierichting"];
-
-            echo "<tbody>";
-            echo "<tr>";
-            echo "<td>";
-            echo $studentID . "</td>";
-            echo "<td>";
-            echo  $voornaam . "</td>";
-            echo "<td>";
-            echo  $achternaam . "</td>";
-            echo "<td>";
-            echo $studierichting . "</td>";
-            echo "</tr>";
-        }
-            echo "</table>";
-
-        }
-
-
-
-    ?>
 </main>
 <footer>
 </footer>

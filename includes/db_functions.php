@@ -9,14 +9,14 @@ function StartConnection($dbname){
     $host = "localhost";
     //$dbname = "testdb";
     $username = "root";
-    $password = ""; // standaard leeg bij XAMPP
+    $password = ""; // Empty on default in XAMPP
 
     try {
         $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
 
-        // Zet PDO foutmeldingen aan
+        // Turns on PDO errors
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+        echo "Verbinding met $dbname gemaakt!";
         return $conn;
 
     }
@@ -28,7 +28,7 @@ function StartConnection($dbname){
 function ExecuteSelectQuery($query){
 
     global $conn;
-
+    echo "Query $query";
     try {
 
         //$conn = startConnection($dbname);
@@ -39,6 +39,7 @@ function ExecuteSelectQuery($query){
         // Resultaat als associatieve array
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        //echo "Query $query";
         return $result;
     }
     catch (PDOException $e) {
@@ -53,7 +54,7 @@ function ExecuteQuery($query){
     try {
         $result = $conn->exec($query);
 
-        //exec() geeft direct aantal affected rows terug
+        //exec() gives direct number of affected rows
         return $result;
     }
     catch (PDOException $e){
