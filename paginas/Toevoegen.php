@@ -53,9 +53,38 @@
 
 </header>
 <main>
+    <?php
+    if(isset($_POST["addStudent"])) {
+    //var_dump($_POST);
+    $voornaam = $_POST["studentvoornaam"];
+    $achternaam = $_POST["studentachternaam"];
+    $geboortedatum = $_POST["geboortedatum"];
+    $geslacht = $_POST["geslacht"];
+    $email = $_POST["email"];
+    $studierichting = $_POST["studierichting"];
+
+    $query = "INSERT INTO pokemon VALUES ('$voornaam', '$achternaam', '$geboortedatum', '$geslacht', '$email','$studierichting');";
+    echo $query;
+    $insert = ($query);
+
+    include "../includes/db_functions.php";
+
+    StartConnection("studenten_db");
+
+    $rowsAffected = ExecuteQuery($query);
+    if($rowsAffected >= 1)
+    {
+    echo "U heeft een student toegevoegd.";
+    }
+    else
+    {
+    echo "helaas is er iets mis gegaan.";
+    }
+    }
+    ?>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Bewerk student
+        Voeg student toe
     </button>
 
     <!-- Modal -->
@@ -68,14 +97,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Voornaam" aria-label="Voornaam">
-                        <input type="text" class="form-control" placeholder="Achternaam" aria-label="Achternaam">
+                        <input type="text" class="form-control" placeholder="Voornaam" aria-label="Voornaam" name="studentvoornaam">
+                        <input type="text" class="form-control" placeholder="Achternaam" aria-label="Achternaam" name="Studentachternaam">
                     </div>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Geboortedatum" aria-label="Geboortedatum" aria-describedby="basic-addon1">
+                        <input type="text" class="form-control" placeholder="Geboortedatum" aria-label="Geboortedatum" aria-describedby="basic-addon1" name="geboortedatum">
                     </div>
                     <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Geslacht</button>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" name="geslacht">Geslacht</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Man</a></li>
                             <li><a class="dropdown-item" href="#">Vrouw</a></li>
@@ -83,11 +112,11 @@
                         </ul>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" name="email">
                         <span class="input-group-text" id="basic-addon2">@student.kw1c.nl</span>
                     </div>
                     <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Kies studierichting</button>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" name="studierichting">Kies studierichting</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Verpleegkunde</a></li>
                             <li><a class="dropdown-item" href="#">Logistiek</a></li>
@@ -104,7 +133,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
-                    <button type="button" class="btn btn-primary">Sla bewerkingen op</button>
+                    <button type="submit" class="btn btn-primary" name="addStudent">Voeg student toe</button>
                 </div>
             </div>
         </div>
