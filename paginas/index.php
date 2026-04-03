@@ -52,21 +52,174 @@
     </nav>
 
 </header>
+<?php
+include "../includes/db_functions.php";
+StartConnection("studenten_db");
+?>
 <main>
-    <form action="index.php" method="get">
-    <div class="input-group flex-nowrap">
-        <span class="input-group-text"</span>
-        <input type="text" class="form-control" placeholder="" aria-label="naamStudent" name="naamStudent">
-        <!-- input type="submit" value="Zoeken" -->
-        <input type="submit" name="studentZoeken" value="Zoeken">
+    <?php
+    if(isset($_POST["addStudent"])) {
+        //var_dump($_POST);
+        $voornaam = $_POST["studentvoornaam"];
+        $achternaam = $_POST["studentachternaam"];
+        $geboortedatum = $_POST["geboortedatum"];
+        $geslacht = $_POST["geslacht"];
+        $email = $_POST["email"];
+        $studierichting = $_POST["studierichting"];
+
+        $query = "INSERT INTO studenten (Voornaam, Achternaam, Geboortedatum, Geslacht, Email, Studierichting) VALUES ('$voornaam', '$achternaam', '$geboortedatum', '$geslacht', '$email','$studierichting');";
+        echo $query;
+        $insert = ($query);
+
+
+        $rowsAffected = ExecuteQuery($query);
+        if($rowsAffected >= 1)
+        {
+            echo "U heeft een student toegevoegd.";
+        }
+        else
+        {
+            echo "helaas is er iets mis gegaan.";
+        }
+    }
+    ?>
+    <div class="d-flex gap-2 mb-3">
+        <form action="index.php" method="get" style="flex: 1;">
+            <div class="input-group flex-nowrap">
+                <span class="input-group-text"</span>
+                <input type="text" class="form-control" placeholder="" aria-label="naamStudent" name="naamStudent">
+                <!-- input type="submit" value="Zoeken" -->
+                <input type="submit" name="studentZoeken" value="Zoeken">
+            </div>
+        </form>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Voeg student toe
+        </button>
     </div>
-    </form>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Invoeg formulier</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Voornaam" aria-label="Voornaam" name="studentvoornaam" required>
+                            <input type="text" class="form-control" placeholder="Achternaam" aria-label="Achternaam" name="studentachternaam" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Geboortedatum" aria-label="Geboortedatum" aria-describedby="basic-addon1" name="geboortedatum" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <select class="form-select" name="geslacht" required>
+                                <option selected disabled>Kies geslacht</option>
+                                <option value="Man">Man</option>
+                                <option value="Vrouw">Vrouw</option>
+                                <option value="Anders">Anders</option>
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" name="email" required>
+                            <span class="input-group-text" id="basic-addon2">@student.kw1c.nl</span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <select class="form-select" name="studierichting" required>
+                                <option selected disabled>Kies studierichting</option>
+                                <option value="Verpleegkunde">Verpleegkunde</option>
+                                <option value="Logistiek">Logistiek</option>
+                                <option value="Toerisme">Toerisme</option>
+                                <option value="ICT">ICT</option>
+                                <option value="Autotechniek">Autotechniek</option>
+                                <option value="Bouwkunde">Bouwkunde</option>
+                                <option value="Maatschappelijke Zorg">Maatschappelijke Zorg</option>
+                                <option value="Onderwijsassistent">Onderwijsassistent</option>
+                                <option value="Economie">Economie</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                            <button type="submit" class="btn btn-primary" name="addStudent" value="true">Voeg student toe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <?php
+    $htmleditknop = <<<HTML
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Bewerk
+</button>
 
-    include "../includes/db_functions.php";
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Bewerk formulier</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Voornaam" aria-label="Voornaam" name="studentvoornaam" required>
+                        <input type="text" class="form-control" placeholder="Achternaam" aria-label="Achternaam" name="studentachternaam" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <select class="form-select" name="geslacht" required>
+                            <option selected disabled>Kies geslacht</option>
+                            <option value="Man">Man</option>
+                            <option value="Vrouw">Vrouw</option>
+                            <option value="Anders">Anders</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" name="email" required>
+                        <span class="input-group-text" id="basic-addon2">@student.kw1c.nl</span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <select class="form-select" name="studierichting" required>
+                            <option selected disabled>Kies studierichting</option>
+                            <option value="Verpleegkunde">Verpleegkunde</option>
+                            <option value="Logistiek">Logistiek</option>
+                            <option value="Toerisme">Toerisme</option>
+                            <option value="ICT">ICT</option>
+                            <option value="Autotechniek">Autotechniek</option>
+                            <option value="Bouwkunde">Bouwkunde</option>
+                            <option value="Maatschappelijke Zorg">Maatschappelijke Zorg</option>
+                            <option value="Onderwijsassistent">Onderwijsassistent</option>
+                            <option value="Economie">Economie</option>
+                            <option value="Marketing">Marketing</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <select class="form-select" name="studiestatus" required>
+                            <option selected disabled>Studiestatus</option>
+                            <option value="Actief">Actief</option>
+                            <option value="Gestopt">Gestopt</option>
+                            <option value="Afgestudeerd">Afgestudeerd</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                        <button type="submit" class="btn btn-primary" name="addStudent" value="true">Sla bewerking op</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-    StartConnection("studenten_db");
+<input class="btn btn-primary" type="submit" value="Verwijder">
+HTML;
 
 
     if(isset($_GET["studentZoeken"])) {
@@ -102,6 +255,10 @@
             echo  $achternaam . "</td>";
             echo "<td>";
             echo $studierichting . "</td>";
+            echo "<td>";
+            echo "$htmleditknop" . "</td>";
+            echo "<td>";
+            echo "Verwijderknop" . "</td>";
             echo "</tr>";
         }
             echo "</table>";

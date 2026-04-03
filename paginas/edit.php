@@ -53,9 +53,13 @@
 
 </header>
 <main>
+    <?php
+
+
+    ?>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Bewerk student
+        Bewerk
     </button>
 
     <!-- Modal -->
@@ -67,48 +71,56 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Voornaam" aria-label="Voornaam">
-                        <input type="text" class="form-control" placeholder="Achternaam" aria-label="Achternaam">
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Geboortedatum" aria-label="Geboortedatum" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Geslacht</button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Man</a></li>
-                            <li><a class="dropdown-item" href="#">Vrouw</a></li>
-                            <li><a class="dropdown-item" href="#">Anders</a></li>
-                        </ul>
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2">
-                        <span class="input-group-text" id="basic-addon2">@student.kw1c.nl</span>
-                    </div>
-                    <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Kies studierichting</button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Verpleegkunde</a></li>
-                            <li><a class="dropdown-item" href="#">Logistiek</a></li>
-                            <li><a class="dropdown-item" href="#">Toerisme</a></li>
-                            <li><a class="dropdown-item" href="#">ICT</a></li>
-                            <li><a class="dropdown-item" href="#">Autotechniek</a></li>
-                            <li><a class="dropdown-item" href="#">Bouwkunde</a></li>
-                            <li><a class="dropdown-item" href="#">Maatschappelijke Zorg</a></li>
-                            <li><a class="dropdown-item" href="#">Onderwijsassistent</a></li>
-                            <li><a class="dropdown-item" href="#">Economie</a></li>
-                            <li><a class="dropdown-item" href="#">Marketing</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
-                    <button type="button" class="btn btn-primary">Sla bewerkingen op</button>
+                    <form method="POST">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Voornaam" aria-label="Voornaam" name="studentvoornaam" required>
+                            <input type="text" class="form-control" placeholder="Achternaam" aria-label="Achternaam" name="studentachternaam" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <select class="form-select" name="geslacht" required>
+                                <option selected disabled>Kies geslacht</option>
+                                <option value="Man">Man</option>
+                                <option value="Vrouw">Vrouw</option>
+                                <option value="Anders">Anders</option>
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" name="email" required>
+                            <span class="input-group-text" id="basic-addon2">@student.kw1c.nl</span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <select class="form-select" name="studierichting" required>
+                                <option selected disabled>Kies studierichting</option>
+                                <option value="Verpleegkunde">Verpleegkunde</option>
+                                <option value="Logistiek">Logistiek</option>
+                                <option value="Toerisme">Toerisme</option>
+                                <option value="ICT">ICT</option>
+                                <option value="Autotechniek">Autotechniek</option>
+                                <option value="Bouwkunde">Bouwkunde</option>
+                                <option value="Maatschappelijke Zorg">Maatschappelijke Zorg</option>
+                                <option value="Onderwijsassistent">Onderwijsassistent</option>
+                                <option value="Economie">Economie</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <select class="form-select" name="studiestatus" required>
+                                <option selected disabled>Studiestatus</option>
+                                <option value="Actief">Actief</option>
+                                <option value="Gestopt">Gestopt</option>
+                                <option value="Afgestudeerd">Afgestudeerd</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                            <button type="submit" class="btn btn-primary" name="addStudent" value="true">Sla bewerking op</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    <input class="btn btn-primary" type="submit" value="Verwijder">
 </main>
 <footer>
 </footer>
