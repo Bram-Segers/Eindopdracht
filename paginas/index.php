@@ -218,9 +218,20 @@ StartConnection("studenten_db");
     </div>
 </div>
 
-<input class="btn btn-primary" type="submit" value="Verwijder">
 HTML;
 
+    if(isset($_POST["deleteStudent"])) {
+        $id = $_POST["deleteID"];
+
+        $query = "DELETE FROM studenten WHERE StudentID = '$id'";
+        $result = ExecuteQuery($query);
+
+        if($result >= 1) {
+            echo "Student verwijderd.";
+        } else {
+            echo "Verwijderen mislukt.";
+        }
+    }
 
     if(isset($_GET["studentZoeken"])) {
         $searchName = $_GET["naamStudent"];
@@ -256,10 +267,17 @@ HTML;
             echo "<td>";
             echo $studierichting . "</td>";
             echo "<td>";
-            echo "$htmleditknop" . "</td>";
-            echo "<td>";
-            echo "Verwijderknop" . "</td>";
-            echo "</tr>";
+            echo $htmleditknop;
+
+// DELETE FORM
+            echo "
+<form method='POST' style='display:inline;'>
+    <input type='hidden' name='deleteID' value='$studentID'>
+    <input type='submit' name='deleteStudent' class='btn btn-danger' value='Verwijder' onclick=\"return confirm('Weet je het zeker?')\">
+</form>
+";
+
+            echo "</td>";
         }
             echo "</table>";
 
