@@ -34,9 +34,6 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="../paginas/index.php">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../paginas/help.html">Handleiding</a>
-                    </li>
                 </ul>
             </div>
         </div>
