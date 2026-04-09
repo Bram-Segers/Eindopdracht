@@ -1,29 +1,49 @@
 <?php
+// Start the PHP session to store user data
 session_start();
 
 
+// Define an array of valid users with their passwords
 $users = [
     "admin" => "1234" //This should be a more robust non password revealing method instead of this.
 ];
 
+// Check if the form was submitted via POST method
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
+    // Get the username from the login form
     $username = $_POST["username"];
+    // Get the password from the login form
     $password = $_POST["password"];
 
+    // Check if the username exists in the users array and the password matches
     if (isset($users[$username]) && $users[$username] === $password) {
+        // Set session variable to indicate user is logged in
         $_SESSION["loggedin"] = true;
+        // Store the username in the session for later use
         $_SESSION["username"] = $username;
-        // Redirect naar index na succesvolle login
+        // Redirect to the index page after successful login
         header("Location: index.php");
+        // Stop execution of the script
         exit();
     } else {
+        // Set error message if login credentials are incorrect
         $error = "Foute gebruikersnaam of wachtwoord";
     }
 }
 
+// Check if the logout button was clicked
 if (isset($_POST["logout"])) {
+    // Destroy the current session
     session_destroy();
+    // Start a new session
+    session_start();
+    // Set loggedin to false to clear the login state
+    $_SESSION["loggedin"] = false;
+    // Clear the username from the session
+    $_SESSION["username"] = "";
+    // Redirect back to the login page
     header("Location: login.php");
+    // Stop execution of the script
     exit();
 }
 ?>
@@ -61,15 +81,6 @@ if (isset($_POST["logout"])) {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="../paginas/index.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../paginas/admin.php">Beheer</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../paginas/help.html">Handleiding</a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -124,11 +135,6 @@ if (isset($_POST["logout"])) {
 
                     </form>
 
-                    <div class="text-center">
-                        <a href="index.php" class="text-decoration-none">
-                            Doorgaan zonder in te loggen
-                        </a>
-                    </div>
 
 
 

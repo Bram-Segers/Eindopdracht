@@ -35,9 +35,6 @@
                         <a class="nav-link active" aria-current="page" href="../paginas/index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../paginas/admin.php">Beheer</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="../paginas/help.html">Handleiding</a>
                     </li>
                 </ul>
@@ -47,33 +44,51 @@
 
 </header>
 <?php
+// Start the PHP session to store user data
 session_start();
+// Include the database functions file
 include "../includes/db_functions.php";
+// Establish connection to the student database
 StartConnection("studenten_db");
 ?>
 <main>
     <?php
-    if(isset($_POST["addStudent"])) {
+    // Check if user is admin for add/edit/delete operations
+    $isAdmin = isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && isset($_SESSION["username"]) && $_SESSION["username"] === "admin";
+
+    // Check if admin user submitted the add student form
+    if($isAdmin && isset($_POST["addStudent"])) {
         //var_dump($_POST);
+        // Get first name from form input
         $voornaam = $_POST["studentvoornaam"];
+        // Get last name from form input
         $achternaam = $_POST["studentachternaam"];
+        // Get birth date from form input
         $geboortedatum = $_POST["geboortedatum"];
+        // Get gender from form input
         $geslacht = $_POST["geslacht"];
+        // Get email from form input
         $email = $_POST["email"];
+        // Get study direction from form input
         $studierichting = $_POST["studierichting"];
 
+        // Create SQL query to insert new student into database
         $query = "INSERT INTO studenten (Voornaam, Achternaam, Geboortedatum, Geslacht, Email, Studierichting, StudieStatus, Startjaar) VALUES ('$voornaam', '$achternaam', '$geboortedatum', '$geslacht', CONCAT('$email','@student.kw1c.nl'),'$studierichting','Actief',YEAR(NOW()));";
-        echo $query;
+        //echo $query;
+        // Execute the query (this line seems redundant)
         $insert = ($query);
 
-
+        // Execute the insert query and get number of affected rows
         $rowsAffected = ExecuteQuery($query);
+        // Check if at least one row was affected (student added successfully)
         if($rowsAffected >= 1)
         {
+            // Display success message
             echo "U heeft een student toegevoegd.";
         }
         else
         {
+            // Display error message
             echo "helaas is er iets mis gegaan.";
         }
     }
@@ -88,12 +103,15 @@ StartConnection("studenten_db");
             </div>
         </form>
         <!-- Button trigger modal -->
+        <?php if ($isAdmin): ?>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Voeg student toe
         </button>
+        <?php endif; ?>
     </div>
 
     <!-- Modal -->
+    <?php if ($isAdmin): ?>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -146,101 +164,167 @@ StartConnection("studenten_db");
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
 
     <?php
-
-
-
+    // Check if modify student form was submitted
     if(isset($_POST["modifyStudent"])) {
+        // Check if user is not admin, deny access
+        if (!$isAdmin) {
+            // Display access denied message
+            echo "U heeft geen toestemming om studenten te bewerken.";
+            // Stop script execution
+            exit();
+        }
         //var_dump($_POST);
+        // Get student ID to update
         $id = $_POST["updateID"];
+        // Get updated first name
         $voornaam = $_POST["studentvoornaam"];
+        // Get updated last name
         $achternaam = $_POST["studentachternaam"];
+        // Get updated birth date
         $geboortedatum = $_POST["geboortedatum"];
+        // Get updated gender
         $geslacht = $_POST["geslacht"];
+        // Get updated email
         $email = $_POST["email"];
+        // Get updated study status
         $studiestatus = $_POST["studiestatus"];
+        // Get updated study direction
         $studierichting = $_POST["studierichting"];
 
+        // Create SQL query to update student data
         $queryUpdate = "UPDATE studenten SET Voornaam = '$voornaam', Achternaam = '$achternaam', Geboortedatum = '$geboortedatum', Geslacht = '$geslacht', Email = '$email', Studierichting = '$studierichting', StudieStatus = '$studiestatus' WHERE StudentID = $id;";
         // echo $queryUpdate;
 
-
-
+        // Execute the update query
         $rowsAffected = ExecuteQuery($queryUpdate);
+        // Check if update was successful
         if($rowsAffected >= 1)
         {
+            // Display success message
             echo "U heeft een student toegevoegd.";
         }
         else
         {
+            // Display error message
             echo "helaas is er iets mis gegaan.";
         }
     }
 
 
+    // Check if delete student form was submitted
     if(isset($_POST["deleteStudent"])) {
+        // Check if user is not admin, deny access
+        if (!$isAdmin) {
+            // Display access denied message
+            echo "U heeft geen toestemming om studenten te verwijderen.";
+            // Stop script execution
+            exit();
+        }
+        // Get student ID to delete
         $id = $_POST["deleteID"];
 
+        // Create SQL query to delete student
         $query = "DELETE FROM studenten WHERE StudentID = '$id'";
+        // Execute the delete query
         $result = ExecuteQuery($query);
 
+        // Check if deletion was successful
         if($result >= 1) {
+            // Display success message
             echo "Student verwijderd.";
         } else {
+            // Display error message
             echo "Verwijderen mislukt.";
         }
     }
 
+    // Check if search form was submitted
     if(isset($_GET["studentZoeken"])) {
+        // Get search term from URL parameter
         $searchName = $_GET["naamStudent"];
 
+        // Create SQL query to search for students by name or ID
         $query = "SELECT * FROM studenten WHERE Voornaam LIKE '%$searchName%' OR Achternaam LIKE '%$searchName%' OR StudentID = '$searchName';";
 
-
+        // Execute the search query
         $resultSearchStudent = ExecuteSelectQuery($query);
         //echo var_dump();
-        echo "<table class='table-responsive'>";
-        echo "<thead>";
+        // Start building HTML table with Bootstrap classes
+        echo "<table class='table table-striped table-hover table-bordered'>";
+        // Create table header with dark background
+        echo "<thead class='table-dark'>";
         echo "<tr>";
-        echo "<th scope='col'>Student ID</th>";
-        echo "<th scope='col'>Voornaam</th>";
-        echo "<th scope='col'>Achternaam</th>";
-        echo "<th scope='col'>Studierichting</th>";
+        // Always show basic columns
+        echo "<th scope='col' class='px-3'>Student ID</th>";
+        echo "<th scope='col' class='px-3'>Voornaam</th>";
+        echo "<th scope='col' class='px-3'>Achternaam</th>";
+        echo "<th scope='col' class='px-3'>Studierichting</th>";
+        // Show additional columns only for admin users
+        if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && isset($_SESSION["username"]) && $_SESSION["username"] === "admin") {
+            echo "<th scope='col' class='px-3'>Geboortedatum</th>";
+            echo "<th scope='col' class='px-3'>Geslacht</th>";
+            echo "<th scope='col' class='px-3'>Email</th>";
+            echo "<th scope='col' class='px-3'>Startjaar</th>";
+            echo "<th scope='col' class='px-3'>Studiestatus</th>";
+            echo "<th scope='col' class='px-3'>Acties</th>";
+        }
         echo "</tr>";
         echo "</thead>";
+        // Start table body
         echo "<tbody>";
+        // Loop through each search result
         foreach ($resultSearchStudent as $row) {
+            // Extract data from current row
             $voornaam = $row["Voornaam"];
             $achternaam = $row["Achternaam"];
             $studentID = $row["StudentID"];
             $studierichting = $row["Studierichting"];
+            $geboortedatum = $row["Geboortedatum"];
+            $geslacht = $row["Geslacht"];
+            $email = $row["Email"];
+            $startjaar = $row["Startjaar"];
+            $studiestatus = $row["StudieStatus"];
 
+            // Start new table row
             echo "<tr>";
-            echo "<td>";
-            echo $studentID . "</td>";
-            echo "<td>";
-            echo  $voornaam . "</td>";
-            echo "<td>";
-            echo  $achternaam . "</td>";
-            echo "<td>";
-            echo $studierichting . "</td>";
-            echo "<td>";
-            echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='editModal'><a href='./edit.php?StudentID=$studentID'>Bewerk</a></button>";
+            // Always show basic data columns
+            echo "<td>" . $studentID . "</td>";
+            echo "<td>" . $voornaam . "</td>";
+            echo "<td>" . $achternaam . "</td>";
+            echo "<td>" . $studierichting . "</td>";
+            // Show additional columns only for admin users
+            if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && isset($_SESSION["username"]) && $_SESSION["username"] === "admin") {
+                echo "<td>" . $geboortedatum . "</td>";
+                echo "<td>" . $geslacht . "</td>";
+                echo "<td>" . $email . "</td>";
+                echo "<td>" . $startjaar . "</td>";
+                echo "<td>" . $studiestatus . "</td>";
+                // Start actions column
+                echo "<td>";
+                // Create edit button with orange styling
+                echo "<button type='button' class='btn btn-warning text-white' data-bs-toggle='modal' data-bs-target='editModal'><a href='./edit.php?StudentID=$studentID' class='text-white text-decoration-none'>Bewerk</a></button>";
 
-// DELETE FORM
-            echo "
+                // DELETE FORM
+                echo "
 <form method='POST' style='display:inline;'>
     <input type='hidden' name='deleteID' value='$studentID'>
     <input type='submit' name='deleteStudent' class='btn btn-danger' value='Verwijder' onclick=\"return confirm('Weet je het zeker?')\">
 </form>
 ";
 
-            echo "</td>";
+                // End actions column
+                echo "</td>";
+            }
+            // End table row
             echo "</tr>";
         }
+        // End table body
         echo "</tbody>";
+        // End table
         echo "</table>";
 
     }
@@ -262,17 +346,25 @@ StartConnection("studenten_db");
 </script>
 
 <script>
-// Auto-logout bij pagina sluiten als ingelogd
-<?php if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true): ?>
+// Auto-logout if user closes the tab or browser window
+<?php if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && isset($_SESSION["username"]) && $_SESSION["username"] === "admin"): ?>
+// Add event listener for when the page is about to be unloaded (closed/refreshed)
 window.addEventListener('beforeunload', function(event) {
-    // Synchronische AJAX call om logout uit te voeren
+    // Create XMLHttpRequest to send logout request to server when page is closed
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'login.php', false); // false = synchroon
+    // Configure the request: POST method, target URL, synchronous (false = sync)
+    xhr.open('POST', 'login.php', false); 
+    // Set the content type header for form data
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    // Send the logout request with the logout parameter
     xhr.send('logout=true');
 });
+// End of beforeunload event listener
 <?php endif; ?>
+// End of auto-logout script
 </script>
 </body>
 </html>
+
+
 

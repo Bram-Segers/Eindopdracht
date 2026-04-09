@@ -16,7 +16,7 @@ function StartConnection($dbname){
 
         // Turns on PDO errors
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        echo "Verbinding met $dbname gemaakt!";
+        //echo "Verbinding met $dbname gemaakt!";
         return $conn;
 
     }
@@ -28,7 +28,7 @@ function StartConnection($dbname){
 function ExecuteSelectQuery($query){
 
     global $conn;
-    echo "Query $query";
+    //echo "Query $query";
     try {
 
         //$conn = startConnection($dbname);

@@ -85,7 +85,7 @@
         $rowsAffected = ExecuteQuery($queryUpdate);
         if($rowsAffected >= 1)
         {
-            echo "U heeft een student toegevoegd.";
+            echo "U heeft een student gewijzigd.";
         }
         else
         {
