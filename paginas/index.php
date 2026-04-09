@@ -5,16 +5,16 @@
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
 
     <!-- Bootstrap CSS v5.2.1 -->
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-        crossorigin="anonymous"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
     />
     <link rel="stylesheet" href="../paginas/opmaak.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,19 +32,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="../paginas/bootstrap.html">Home</a>
+                        <a class="nav-link active" aria-current="page" href="../paginas/index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../paginas/C++.html">Embedded</a>
+                        <a class="nav-link" href="../paginas/admin.php">Beheer</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../paginas/IRW.html">Interactive responsive website</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../paginas/brb.html">Reddingsbrigade</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../paginas/bram.html">Over mij</a>
+                        <a class="nav-link" href="../paginas/help.html">Handleiding</a>
                     </li>
                 </ul>
             </div>
@@ -67,7 +61,7 @@ StartConnection("studenten_db");
         $email = $_POST["email"];
         $studierichting = $_POST["studierichting"];
 
-        $query = "INSERT INTO studenten (Voornaam, Achternaam, Geboortedatum, Geslacht, Email, Studierichting) VALUES ('$voornaam', '$achternaam', '$geboortedatum', '$geslacht', '$email','$studierichting');";
+        $query = "INSERT INTO studenten (Voornaam, Achternaam, Geboortedatum, Geslacht, Email, Studierichting, StudieStatus, Startjaar) VALUES ('$voornaam', '$achternaam', '$geboortedatum', '$geslacht', CONCAT('$email','@student.kw1c.nl'),'$studierichting','Actief',YEAR(NOW()));";
         echo $query;
         $insert = ($query);
 
@@ -154,71 +148,36 @@ StartConnection("studenten_db");
 
 
     <?php
-    $htmleditknop = <<<HTML
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Bewerk
-</button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Bewerk formulier</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Voornaam" aria-label="Voornaam" name="studentvoornaam" required>
-                        <input type="text" class="form-control" placeholder="Achternaam" aria-label="Achternaam" name="studentachternaam" required>
-                    </div>
-                    <div class="input-group mb-3">
-                        <select class="form-select" name="geslacht" required>
-                            <option selected disabled>Kies geslacht</option>
-                            <option value="Man">Man</option>
-                            <option value="Vrouw">Vrouw</option>
-                            <option value="Anders">Anders</option>
-                        </select>
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" name="email" required>
-                        <span class="input-group-text" id="basic-addon2">@student.kw1c.nl</span>
-                    </div>
-                    <div class="input-group mb-3">
-                        <select class="form-select" name="studierichting" required>
-                            <option selected disabled>Kies studierichting</option>
-                            <option value="Verpleegkunde">Verpleegkunde</option>
-                            <option value="Logistiek">Logistiek</option>
-                            <option value="Toerisme">Toerisme</option>
-                            <option value="ICT">ICT</option>
-                            <option value="Autotechniek">Autotechniek</option>
-                            <option value="Bouwkunde">Bouwkunde</option>
-                            <option value="Maatschappelijke Zorg">Maatschappelijke Zorg</option>
-                            <option value="Onderwijsassistent">Onderwijsassistent</option>
-                            <option value="Economie">Economie</option>
-                            <option value="Marketing">Marketing</option>
-                        </select>
-                    </div>
-                    <div class="input-group mb-3">
-                        <select class="form-select" name="studiestatus" required>
-                            <option selected disabled>Studiestatus</option>
-                            <option value="Actief">Actief</option>
-                            <option value="Gestopt">Gestopt</option>
-                            <option value="Afgestudeerd">Afgestudeerd</option>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
-                        <button type="submit" class="btn btn-primary" name="addStudent" value="true">Sla bewerking op</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
-HTML;
+
+    if(isset($_POST["modifyStudent"])) {
+        //var_dump($_POST);
+        $id = $_POST["updateID"];
+        $voornaam = $_POST["studentvoornaam"];
+        $achternaam = $_POST["studentachternaam"];
+        $geboortedatum = $_POST["geboortedatum"];
+        $geslacht = $_POST["geslacht"];
+        $email = $_POST["email"];
+        $studiestatus = $_POST["studiestatus"];
+        $studierichting = $_POST["studierichting"];
+
+        $queryUpdate = "UPDATE studenten SET Voornaam = '$voornaam', Achternaam = '$achternaam', Geboortedatum = '$geboortedatum', Geslacht = '$geslacht', Email = '$email', Studierichting = '$studierichting', StudieStatus = '$studiestatus' WHERE StudentID = $id;";
+        // echo $queryUpdate;
+
+
+
+        $rowsAffected = ExecuteQuery($queryUpdate);
+        if($rowsAffected >= 1)
+        {
+            echo "U heeft een student toegevoegd.";
+        }
+        else
+        {
+            echo "helaas is er iets mis gegaan.";
+        }
+    }
+
 
     if(isset($_POST["deleteStudent"])) {
         $id = $_POST["deleteID"];
@@ -240,7 +199,7 @@ HTML;
 
 
         $resultSearchStudent = ExecuteSelectQuery($query);
-            //echo var_dump();
+        //echo var_dump();
         echo "<table class='table-responsive'>";
         echo "<thead>";
         echo "<tr>";
@@ -250,13 +209,13 @@ HTML;
         echo "<th scope='col'>Studierichting</th>";
         echo "</tr>";
         echo "</thead>";
+        echo "<tbody>";
         foreach ($resultSearchStudent as $row) {
             $voornaam = $row["Voornaam"];
             $achternaam = $row["Achternaam"];
             $studentID = $row["StudentID"];
             $studierichting = $row["Studierichting"];
 
-            echo "<tbody>";
             echo "<tr>";
             echo "<td>";
             echo $studentID . "</td>";
@@ -267,7 +226,7 @@ HTML;
             echo "<td>";
             echo $studierichting . "</td>";
             echo "<td>";
-            echo $htmleditknop;
+            echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='editModal'><a href='./edit.php?StudentID=$studentID'>Bewerk</a></button>";
 
 // DELETE FORM
             echo "
@@ -278,28 +237,27 @@ HTML;
 ";
 
             echo "</td>";
+            echo "</tr>";
         }
-            echo "</table>";
+        echo "</tbody>";
+        echo "</table>";
 
-        }
-
-
-
+    }
     ?>
 </main>
 <footer>
 </footer>
 <!-- Bootstrap JavaScript Libraries -->
 <script
-    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-    crossorigin="anonymous">
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous">
 </script>
 
 <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-    crossorigin="anonymous">
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous">
 </script>
 </body>
 </html>
