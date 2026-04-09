@@ -48,16 +48,36 @@
 </header>
 <main>
     <?php
+    // Include database functions file
     include "../includes/db_functions.php";
+    // Establish connection to the student database
     StartConnection("studenten_db");
-    $updateStudentID = $_GET["StudentID"];
 
-    $querySelect4Update = "SELECT * FROM studenten WHERE StudentID = $updateStudentID;";
-    // echo $querySelect4Update;
-    $resultUpdateStudent = ExecuteSelectQuery($querySelect4Update);
-    // Since StudentID is a primary key and since it is invoked from the search result, the studentID should exist and only one row will return.
-    // TODO: if the page is invoked directly and the StudentID does not exist. An error shoud be handled.
+    // Validate and sanitize the StudentID from GET parameter
+    $updateStudentID = ValidateInput($_GET["StudentID"], 'int');
+
+    // Check if StudentID validation failed
+    if ($updateStudentID === false) {
+        // Display invalid student ID message
+        echo "Ongeldige student ID.";
+        // Exit script
+        exit();
+    }
+
+    // Create query to select student data for update
+    $querySelect4Update = "SELECT * FROM studenten WHERE StudentID = ?";
+    // Execute select query with StudentID parameter
+    $resultUpdateStudent = ExecuteSelectQuery($querySelect4Update, [$updateStudentID]);
+    // Check if student was found
+    if (empty($resultUpdateStudent)) {
+        // Display student not found message
+        echo "Student niet gevonden.";
+        // Exit script
+        exit();
+    }
+    // Get the first (and only) row from results
     $onlyRow = $resultUpdateStudent[0];
+    // Extract original values from database row
     $orgVoornaam = $onlyRow["Voornaam"];
     $orgAchternaam = $onlyRow["Achternaam"];
     $orgEmail = $onlyRow["Email"];
@@ -66,30 +86,47 @@
     $orgStudierichting = $onlyRow["Studierichting"];
     $orgStudieStatus = $onlyRow["StudieStatus"];
 
+    // Check if modify student form was submitted
     if(isset($_POST["modifyStudent"])) {
-        //var_dump($_POST);
-        //$id = $_POST["updateID"];
-        $voornaam = $_POST["studentvoornaam"];
-        $achternaam = $_POST["studentachternaam"];
-        $geboortedatum = $_POST["geboortedatum"];
-        $geslacht = $_POST["geslacht"];
-        $email = $_POST["email"];
-        $studiestatus = $_POST["studiestatus"];
-        $studierichting = $_POST["studierichting"];
+        // Validate and sanitize all input data
+        $voornaam = ValidateInput($_POST["studentvoornaam"], 'string', 50);
+        $achternaam = ValidateInput($_POST["studentachternaam"], 'string', 50);
+        $geboortedatum = ValidateInput($_POST["geboortedatum"], 'date');
+        $geslacht = ValidateInput($_POST["geslacht"], 'string', 10);
+        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+        $studiestatus = ValidateInput($_POST["studiestatus"], 'string', 20);
+        $studierichting = ValidateInput($_POST["studierichting"], 'string', 100);
 
-        $queryUpdate = "UPDATE studenten SET Voornaam = '$voornaam', Achternaam = '$achternaam', Geboortedatum = '$geboortedatum', Geslacht = '$geslacht', Email = '$email', Studierichting = '$studierichting', StudieStatus = '$studiestatus' WHERE StudentID = $updateStudentID;";
-        // echo $queryUpdate;
+        // Check if all validations passed
+        if ($voornaam === false || $achternaam === false || $geboortedatum === false ||
+            $geslacht === false || $email === false || $studiestatus === false || $studierichting === false) {
+            // Display invalid input message
+            echo "Ongeldige invoer. Controleer alle velden.";
+        } else {
+            // Create prepared statement query to update student data
+            $queryUpdate = "UPDATE studenten SET Voornaam = ?, Achternaam = ?, Geboortedatum = ?, Geslacht = ?, Email = ?, Studierichting = ?, StudieStatus = ? WHERE StudentID = ?";
 
-
-
-        $rowsAffected = ExecuteQuery($queryUpdate);
-        if($rowsAffected >= 1)
-        {
-            echo "U heeft een student gewijzigd.";
-        }
-        else
-        {
-            echo "helaas is er iets mis gegaan.";
+            // Execute prepared query with parameters
+            $rowsAffected = ExecutePreparedQuery($queryUpdate, [$voornaam, $achternaam, $geboortedatum, $geslacht, $email, $studierichting, $studiestatus, $updateStudentID]);
+            // Check if update was successful
+            if($rowsAffected !== false)
+            {
+                // Display success message
+                echo "Update uitgevoerd.";
+                // Update the original values to reflect the changes
+                $orgVoornaam = $voornaam;
+                $orgAchternaam = $achternaam;
+                $orgGeboortedatum = $geboortedatum;
+                $orgGeslacht = $geslacht;
+                $orgEmail = $email;
+                $orgStudierichting = $studierichting;
+                $orgStudieStatus = $studiestatus;
+            }
+            else
+            {
+                // Display error message
+                echo "Fout bij update.";
+            }
         }
     }
     ?>
@@ -100,14 +137,13 @@
             <input type="text" class="form-control" value="<?php echo $orgAchternaam ?>" aria-label="Achternaam" name="studentachternaam" required>
         </div>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" value="<?php echo $orgGeboortedatum ?>" aria-label="Geboortedatum" aria-describedby="basic-addon1" name="geboortedatum" required>
+            <input type="date" class="form-control" value="<?php echo $orgGeboortedatum ?>" aria-label="Geboortedatum" aria-describedby="basic-addon1" name="geboortedatum" required>
         </div>
         <div class="input-group mb-3">
             <select class="form-select" name="geslacht" required>
-                <option selected><?php echo $orgGeslacht ?></option>
-                <option value="Man">Man</option>
-                <option value="Vrouw">Vrouw</option>
-                <option value="Anders">Anders</option>
+                <option value="Man" <?php echo ($orgGeslacht == "Man") ? "selected" : ""; ?>>Man</option>
+                <option value="Vrouw" <?php echo ($orgGeslacht == "Vrouw") ? "selected" : ""; ?>>Vrouw</option>
+                <option value="Anders" <?php echo ($orgGeslacht == "Anders") ? "selected" : ""; ?>>Anders</option>
             </select>
         </div>
         <div class="input-group mb-3">
@@ -115,30 +151,28 @@
         </div>
         <div class="input-group mb-3">
             <select class="form-select" name="studierichting" required>
-                <option selected><?php echo $orgStudierichting ?></option>
-                <option value="Verpleegkunde">Verpleegkunde</option>
-                <option value="Logistiek">Logistiek</option>
-                <option value="Toerisme">Toerisme</option>
-                <option value="ICT">ICT</option>
-                <option value="Autotechniek">Autotechniek</option>
-                <option value="Bouwkunde">Bouwkunde</option>
-                <option value="Maatschappelijke Zorg">Maatschappelijke Zorg</option>
-                <option value="Onderwijsassistent">Onderwijsassistent</option>
-                <option value="Economie">Economie</option>
-                <option value="Marketing">Marketing</option>
+                <option value="Verpleegkunde" <?php echo ($orgStudierichting == "Verpleegkunde") ? "selected" : ""; ?>>Verpleegkunde</option>
+                <option value="Logistiek" <?php echo ($orgStudierichting == "Logistiek") ? "selected" : ""; ?>>Logistiek</option>
+                <option value="Toerisme" <?php echo ($orgStudierichting == "Toerisme") ? "selected" : ""; ?>>Toerisme</option>
+                <option value="ICT" <?php echo ($orgStudierichting == "ICT") ? "selected" : ""; ?>>ICT</option>
+                <option value="Autotechniek" <?php echo ($orgStudierichting == "Autotechniek") ? "selected" : ""; ?>>Autotechniek</option>
+                <option value="Bouwkunde" <?php echo ($orgStudierichting == "Bouwkunde") ? "selected" : ""; ?>>Bouwkunde</option>
+                <option value="Maatschappelijke Zorg" <?php echo ($orgStudierichting == "Maatschappelijke Zorg") ? "selected" : ""; ?>>Maatschappelijke Zorg</option>
+                <option value="Onderwijsassistent" <?php echo ($orgStudierichting == "Onderwijsassistent") ? "selected" : ""; ?>>Onderwijsassistent</option>
+                <option value="Economie" <?php echo ($orgStudierichting == "Economie") ? "selected" : ""; ?>>Economie</option>
+                <option value="Marketing" <?php echo ($orgStudierichting == "Marketing") ? "selected" : ""; ?>>Marketing</option>
             </select>
         </div>
         <div class="input-group mb-3">
             <select class="form-select" name="studiestatus" required>
-                <option selected><?php echo $orgStudieStatus ?></option>
-                <option value="Actief">Actief</option>
-                <option value="Gestopt">Gestopt</option>
-                <option value="Afgestudeerd">Afgestudeerd</option>
+                <option value="Actief" <?php echo ($orgStudieStatus == "Actief") ? "selected" : ""; ?>>Actief</option>
+                <option value="Gestopt" <?php echo ($orgStudieStatus == "Gestopt") ? "selected" : ""; ?>>Gestopt</option>
+                <option value="Afgestudeerd" <?php echo ($orgStudieStatus == "Afgestudeerd") ? "selected" : ""; ?>>Afgestudeerd</option>
             </select>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
-            <input type="hidden" name="updateID" value="$updateStudentID">
+            <input type="hidden" name="updateID" value="<?php echo $updateStudentID ?>">
             <button type="submit" class="btn btn-primary" name="modifyStudent" value="true">Bewerking opslaan</button>
         </div>
     </form>

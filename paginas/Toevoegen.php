@@ -54,32 +54,44 @@
 </header>
 <main>
     <?php
-    if(isset($_POST["addStudent"])) {
-    //var_dump($_POST);
-    $voornaam = $_POST["studentvoornaam"];
-    $achternaam = $_POST["studentachternaam"];
-    $geboortedatum = $_POST["geboortedatum"];
-    $geslacht = $_POST["geslacht"];
-    $email = $_POST["email"];
-    $studierichting = $_POST["studierichting"];
-
-    $query = "INSERT INTO studenten (Voornaam, Achternaam, Geboortedatum, Geslacht, Email, Studierichting) VALUES ('$voornaam', '$achternaam', '$geboortedatum', '$geslacht', '$email','$studierichting');";
-    echo $query;
-    $insert = ($query);
-
+    // Include database functions file
     include "../includes/db_functions.php";
-
+    // Establish connection to the student database
     StartConnection("studenten_db");
 
-    $rowsAffected = ExecuteQuery($query);
-    if($rowsAffected >= 1)
-    {
-    echo "U heeft een student toegevoegd.";
-    }
-    else
-    {
-    echo "helaas is er iets mis gegaan.";
-    }
+    // Check if add student form was submitted
+    if(isset($_POST["addStudent"])) {
+        // Validate and sanitize all input data
+        $voornaam = ValidateInput($_POST["studentvoornaam"], 'string', 50);
+        $achternaam = ValidateInput($_POST["studentachternaam"], 'string', 50);
+        $geboortedatum = ValidateInput($_POST["geboortedatum"], 'date');
+        $geslacht = ValidateInput($_POST["geslacht"], 'string', 10);
+        $email = ValidateInput($_POST["email"], 'string', 50);
+        $studierichting = ValidateInput($_POST["studierichting"], 'string', 100);
+
+        // Check if all validations passed
+        if ($voornaam === false || $achternaam === false || $geboortedatum === false ||
+            $geslacht === false || $email === false || $studierichting === false) {
+            // Display invalid input message
+            echo "Ongeldige invoer. Controleer alle velden.";
+        } else {
+            // Create prepared statement query to insert new student
+            $query = "INSERT INTO studenten (Voornaam, Achternaam, Geboortedatum, Geslacht, Email, Studierichting, StudieStatus, Startjaar) VALUES (?, ?, ?, ?, CONCAT(?,'@student.kw1c.nl'), ?, 'Actief', YEAR(NOW()))";
+
+            // Execute prepared query with parameters
+            $rowsAffected = ExecutePreparedQuery($query, [$voornaam, $achternaam, $geboortedatum, $geslacht, $email, $studierichting]);
+            // Check if insertion was successful
+            if($rowsAffected >= 1)
+            {
+                // Display success message
+                echo "U heeft een student toegevoegd.";
+            }
+            else
+            {
+                // Display error message
+                echo "Helaas is er iets misgegaan.";
+            }
+        }
     }
     ?>
     <!-- Button trigger modal -->
@@ -102,7 +114,7 @@
                             <input type="text" class="form-control" placeholder="Achternaam" aria-label="Achternaam" name="studentachternaam" required>
                         </div>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Geboortedatum" aria-label="Geboortedatum" aria-describedby="basic-addon1" name="geboortedatum" required>
+                            <input type="date" class="form-control" placeholder="Geboortedatum" aria-label="Geboortedatum" aria-describedby="basic-addon1" name="geboortedatum" required>
                         </div>
                         <div class="input-group mb-3">
                             <select class="form-select" name="geslacht" required>
