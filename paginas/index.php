@@ -47,6 +47,7 @@
 
 </header>
 <?php
+session_start();
 include "../includes/db_functions.php";
 StartConnection("studenten_db");
 ?>
@@ -259,5 +260,19 @@ StartConnection("studenten_db");
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
         crossorigin="anonymous">
 </script>
+
+<script>
+// Auto-logout bij pagina sluiten als ingelogd
+<?php if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true): ?>
+window.addEventListener('beforeunload', function(event) {
+    // Synchronische AJAX call om logout uit te voeren
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'login.php', false); // false = synchroon
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('logout=true');
+});
+<?php endif; ?>
+</script>
 </body>
 </html>
+
