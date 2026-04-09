@@ -25,7 +25,7 @@ function StartConnection($dbname){
         // Create PDO instance with MySQL host, database, and charset
 
         // Turns on PDO errors
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ATTR_ERRMODE_EXCEPTION);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, 2);
         // Set error mode to exception for better error handling
         //echo "Verbinding met $dbname gemaakt!";
         // Commented out success message
