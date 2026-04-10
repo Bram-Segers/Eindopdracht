@@ -69,7 +69,7 @@ StartConnection("studenten_db");
             echo "Ongeldige invoer. Controleer alle velden.";
         } else {
             // Create prepared statement query to insert new student
-            $query = "INSERT INTO studenten (Voornaam, Achternaam, Geboortedatum, Geslacht, Email, Studierichting, StudieStatus, Startjaar) VALUES (?, ?, ?, ?, CONCAT(?,'@student.kw1c.nl'), ?, 'Actief', YEAR(NOW()))";
+            $query = "INSERT INTO studenten (Voornaam, Achternaam, Geboortedatum, Geslacht, Email, Studierichting, StudieStatus, Startjaar) VALUES (?, ?, ?, ?, CONCAT(?,'@student.kw1c.nl'), ?, 'Actief', YEAR(CURDATE()))";
 
             // Execute prepared query with parameters
             $rowsAffected = ExecutePreparedQuery($query, [$voornaam, $achternaam, $geboortedatum, $geslacht, $email, $studierichting]);
